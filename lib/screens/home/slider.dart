@@ -79,15 +79,18 @@ class _HomePageState extends State<HomePage2> {
             ),
 
             Positioned(
-                top: 0,
-                child: ClipRRect(
-                    child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).padding.top,
-                          color: Colors.transparent,
-                        )))),
+              top: 0,
+              child: ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).padding.top,
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
+            ),
 
             //the SlidingUpPanel Title
           ],
@@ -191,7 +194,7 @@ class _HomePageState extends State<HomePage2> {
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(themeColorAmber)),
-                          onPressed: () {
+                          onPressed: () async {
                             // authController.getUser();
                             bookingsController.initializeBooking(
                                 auth: authController.userModel!);

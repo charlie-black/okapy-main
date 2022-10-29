@@ -30,7 +30,7 @@ class Api {
     User user = User.fromJson(jsonDecode(prefs.getString('creds')!));
     String basicAuth =
         'Basic ${base64.encode(utf8.encode('${user.userName}:${user.password}'))}';
-
+        
     return _dio.post(serverUrl + url,
         data: data,
         options: Options(

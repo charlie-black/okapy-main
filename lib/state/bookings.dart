@@ -20,6 +20,9 @@ class Bookings extends ChangeNotifier {
   bool get busy => _busy;
   bool _busyF = false;
   bool get busyF => _busy;
+
+  bool _errorInitializingBooking = false;
+
   Api _api = locator<Api>();
   final List<PartnerModel> _partners = [];
   List<PartnerModel> get partners => _partners;
@@ -122,6 +125,7 @@ class Bookings extends ChangeNotifier {
 
   initializeBooking({required UserModel auth}) async {
     _busy = true;
+    _errorInitializingBooking = false;
     notifyListeners();
     await _api.postHeaders(url: "bookings/api/bookings/", data: {
       'owner': auth.id,
@@ -129,6 +133,8 @@ class Bookings extends ChangeNotifier {
       print(value.data);
       _bookingsModel = BookingsModel.fromJson(value.data);
       notifyListeners();
+    }).catchError((error, stackTrace) {
+      _errorInitializingBooking = true;
     });
     _busy = false;
     notifyListeners();
@@ -137,6 +143,10 @@ class Bookings extends ChangeNotifier {
   setSendersLocation({required double lat, required double lang}) {
     _sendersLatlang = LatLng(lat, lang);
     notifyListeners();
+  }
+
+  bool errorInitializingBooking(){
+    return _errorInitializingBooking;
   }
 
   Future bookingsProduct(
