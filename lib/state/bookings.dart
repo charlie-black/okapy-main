@@ -20,6 +20,7 @@ class Bookings extends ChangeNotifier {
   bool get busy => _busy;
   bool _busyF = false;
   bool get busyF => _busy;
+  bool adding_product = false;
 
   bool _errorInitializingBooking = false;
 
@@ -151,7 +152,7 @@ class Bookings extends ChangeNotifier {
 
   Future bookingsProduct(
       {File? doc, String? productID, String? instructions}) async {
-    _busyF = true;
+        adding_product=true;
     notifyListeners();
     return await _api
         .postHeadersFormData(
@@ -165,7 +166,7 @@ class Bookings extends ChangeNotifier {
             }))
         .then((value) {
       _proctuctsModel = ProctuctsModel.fromJson(value.data);
-      _busyF = false;
+      adding_product=false;
       notifyListeners();
       return true;
     }).catchError((onError) {

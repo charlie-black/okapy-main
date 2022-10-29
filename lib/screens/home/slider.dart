@@ -196,13 +196,21 @@ class _HomePageState extends State<HomePage2> {
                                   MaterialStateProperty.all(themeColorAmber)),
                           onPressed: () async {
                             // authController.getUser();
-                            bookingsController.initializeBooking(
-                                auth: authController.userModel!);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Createbooking()),
-                            );
+                            if (authController.userModel == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          "Auth failed, Logout and Login")));
+                            } else {
+                              bookingsController.initializeBooking(
+                                  auth: authController.userModel!);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const Createbooking()),
+                              );
+                            }
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,

@@ -9,6 +9,7 @@ import 'package:okapy/screens/utils/colors.dart';
 import 'package:okapy/state/auth.dart';
 import 'package:okapy/state/bookings.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Createbooking extends StatefulWidget {
   const Createbooking({Key? key}) : super(key: key);
@@ -22,6 +23,25 @@ class _CreatebookingState extends State<Createbooking> {
   bool others = false;
   File? _doc;
   String? instructions;
+
+  TextEditingController productNameController = TextEditingController();
+
+  
+  @override
+void initState() {
+  super.initState();
+
+  // Start listening to changes.
+  productNameController.addListener((){
+    productName=productNameController.text;
+  });
+}
+
+@override
+void dispose() {
+  productNameController.dispose();
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -81,17 +101,21 @@ class _CreatebookingState extends State<Createbooking> {
                                     Container(
                                       height: 47,
                                       width: 47,
-                                      decoration: BoxDecoration(
-                                          color: const Color.fromARGB(71, 7, 36, 154),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
+                                      decoration: productName == "1"
+                                          ? BoxDecoration(
+                                              border: Border.all(
+                                                  color: themeColorAmber))
+                                          : BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  70, 7, 36, 154),
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
                                       child: const Icon(
                                         Icons.headphones,
                                         size: 30,
                                         color: Color(0xff07259A),
                                       ),
                                     ),
-
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -102,7 +126,6 @@ class _CreatebookingState extends State<Createbooking> {
                                   ],
                                 ),
                               ),
-                              
                               InkWell(
                                 onTap: () {
                                   setState(() {
@@ -116,10 +139,14 @@ class _CreatebookingState extends State<Createbooking> {
                                       // E1CAFF
                                       height: 47,
                                       width: 47,
-                                      decoration: BoxDecoration(
-                                          color: const Color(0xffE1CAFF),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
+                                      decoration: productName == "2"
+                                          ? BoxDecoration(
+                                              border: Border.all(
+                                                  color: themeColorAmber))
+                                          : BoxDecoration(
+                                              color: const Color(0xffE1CAFF),
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
                                       child: Center(
                                         child: Image.asset(
                                           'assets/giftBox.png',
@@ -150,10 +177,14 @@ class _CreatebookingState extends State<Createbooking> {
                                       // E1CAFF
                                       height: 47,
                                       width: 47,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffDDF4FF),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
+                                      decoration: productName == "3"
+                                          ? BoxDecoration(
+                                              border: Border.all(
+                                                  color: themeColorAmber))
+                                          : BoxDecoration(
+                                              color: Color(0xffDDF4FF),
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
                                       child: Center(
                                         child: Image.asset(
                                           'assets/doc.png',
@@ -184,10 +215,14 @@ class _CreatebookingState extends State<Createbooking> {
                                       // E1CAFF
                                       height: 47,
                                       width: 47,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffE2FFE3),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
+                                      decoration: productName == "4"
+                                          ? BoxDecoration(
+                                              border: Border.all(
+                                                  color: themeColorAmber))
+                                          : BoxDecoration(
+                                              color: Color(0xffE2FFE3),
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
                                       child: Center(
                                         child: Image.asset(
                                           'assets/package.png',
@@ -208,6 +243,7 @@ class _CreatebookingState extends State<Createbooking> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
+                                    productName = '';
                                     others = true;
                                   });
                                 },
@@ -264,6 +300,7 @@ class _CreatebookingState extends State<Createbooking> {
                                     width: 326,
                                     height: 45,
                                     child: TextFormField(
+                                      controller: productNameController,
                                       onSaved: (newValue) => productName,
                                       decoration: const InputDecoration(
                                           // border: InputBorder()
@@ -289,36 +326,109 @@ class _CreatebookingState extends State<Createbooking> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () async {
-                                  FilePickerResult? result =
-                                      await FilePicker.platform.pickFiles();
-                                  if (result != null) {
-                                    PlatformFile file = result.files.first;
-                                    _doc = File(file.path!);
-                                  } else {
-                                    // User canceled the picker
-                                  }
-                                },
 
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20.0),
-                                  child: Image.asset(
-                                    'assets/addImage.png',
-                                    width: 152,
-                                    height: 75,
-                                  ),
+                          if (_doc != null) ...[
+                            SizedBox(
+                                height: 150,
+                                child: Image.file(
+                                  _doc!,
+                                  fit: BoxFit.cover,
+                                )),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            SizedBox(
+                              height: 49,
+                              width: 326,
+                              child: TextButton(
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red)),
+                                onPressed: () {
+                                  setState(() {
+                                    _doc = null;
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 50,
+                                    ),
+                                    const SizedBox(
+                                      width: 200,
+                                      child: Center(
+                                        child: Text(
+                                          'Delete',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-
+                            ),
+                          ] else ...[
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    final ImagePicker _picker = ImagePicker();
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListTile(
+                                                leading:
+                                                    const Icon(Icons.photo),
+                                                title: const Text('Photo'),
+                                                onTap: () async {
+                                                  final XFile? image =
+                                                      await _picker.pickImage(
+                                                          source: ImageSource
+                                                              .gallery);
+                                                  setState(() {
+                                                    _doc = File(image!.path);
+                                                  });
+                                                },
+                                              ),
+                                              ListTile(
+                                                leading:
+                                                    const Icon(Icons.camera),
+                                                title: const Text('Camera'),
+                                                onTap: () async {
+                                                  final XFile? image =
+                                                      await _picker.pickImage(
+                                                          source: ImageSource
+                                                              .camera);
+                                                  setState(() {
+                                                    _doc = File(image!.path);
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: Image.asset(
+                                      'assets/addImage.png',
+                                      width: 152,
+                                      height: 75,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                           const SizedBox(
                             height: 30,
                           ),
-
                           Padding(
                             padding:
                                 const EdgeInsets.only(top: 10.0, bottom: 1),
@@ -331,7 +441,6 @@ class _CreatebookingState extends State<Createbooking> {
                               ),
                             ),
                           ),
-
                           Padding(
                             padding: const EdgeInsets.all(20.0),
                             child: SizedBox(
@@ -347,66 +456,87 @@ class _CreatebookingState extends State<Createbooking> {
                           const SizedBox(
                             height: 30,
                           ),
+                          
                           SizedBox(
-                              height: 49,
-                              width: 326,
-                              child: TextButton(
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              themeColorAmber)),
-                                  onPressed: () {
-                                    bookingsController
-                                        .bookingsProduct(
-                                            doc: _doc!,
-                                            productID: productName!,
-                                            instructions: instructions!)
-                                        .then((value) {
-                                      print(value);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text("Prroduct Created."),
-                                      ));
+                            height: 49,
+                            width: 326,
+                            child: TextButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      themeColorAmber)),
+                              onPressed: () {
+                                if (_doc == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("Select product image")));
+                                  return;
+                                }
+                                if (productName == null || productName=="") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Select/enter product type")));
+                                  return;
+                                }
+                                if (instructions == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text("Enter instructions")));
+                                  return;
+                                }
+                                bookingsController
+                                    .bookingsProduct(
+                                        doc: _doc!,
+                                        productID: productName!,
+                                        instructions: instructions!)
+                                    .then((value) {
+                                  print(value);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text("Prroduct Created."),
+                                  ));
 
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const WhereUSending()),
-                                      );
-                                    }).catchError((onError) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text("An Error Happened "),
-                                      ));
-                                    });
-                                  },
-                                  child: bookingsController.busyF
-                                      ? CircularProgressIndicator()
-                                      : Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 50,
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const WhereUSending()),
+                                  );
+                                }).catchError((onError) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text("An Error Happened "),
+                                  ));
+                                });
+                              },
+                              child: bookingsController.adding_product
+                                  ? const CircularProgressIndicator()
+                                  : Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 50,
+                                        ),
+                                        SizedBox(
+                                          width: 200,
+                                          child: Center(
+                                            child: Text(
+                                              'Next',
+                                              style: TextStyle(
+                                                  color: themeColorGreen,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600),
                                             ),
-                                            SizedBox(
-                                              width: 200,
-                                              child: Center(
-                                                child: Text(
-                                                  'Next',
-                                                  style: TextStyle(
-                                                      color: themeColorGreen,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.arrow_forward_ios,
-                                              color: themeColorGreen,
-                                            )
-                                          ],
-                                        ))),
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: themeColorGreen,
+                                        )
+                                      ],
+                                    ),
+                            ),
+                          ),
                           const SizedBox(
                             height: 50,
                           )
