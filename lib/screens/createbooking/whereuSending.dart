@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:okapy/screens/createbooking/sendPackage.dart';
 import 'package:okapy/screens/utils/colors.dart';
 import 'package:okapy/state/auth.dart';
 import 'package:okapy/state/bookings.dart';
-import 'package:place_picker/entities/entities.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'dart:math';
 
 import 'package:google_api_headers/google_api_headers.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 
 const kGoogleApiKey = "AIzaSyDwC5mBpcztehUHa3Gfjr9m8BtbNAve1LE";
@@ -31,8 +26,10 @@ class _WhereUSendingState extends State<WhereUSending> {
   String? receiverLocation;
   String? name;
   String? phone;
+
   TextEditingController senderLoc = TextEditingController();
   TextEditingController receiverLoc = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   bool busy = false;
 
@@ -81,24 +78,36 @@ class _WhereUSendingState extends State<WhereUSending> {
                         width: 326,
                         // height: s5,
                         child: TextFormField(
-                          controller: senderLoc,
-                          onSaved: (newValue) => senderLocation = newValue,
-                          onChanged: (value) async {
-                            showPlacePicker();
-                            LocationResult? result = await Navigator.of(context)
+                          onTap: () async {
+                           // showPlacePicker();
+                            Navigator.of(context)
                                 .push(MaterialPageRoute(
                                     builder: (context) => PlacePicker(
-                                        "AIzaSyDwC5mBpcztehUHa3Gfjr9m8BtbNAve1LE")));
-                            bookingController.setSenderLocation(result);
-                            senderLoc.text = result!.formattedAddress!;
-                            // bookingController.searchLocation(location: value);
+                                        "AIzaSyDwC5mBpcztehUHa3Gfjr9m8BtbNAve1LE")))
+                                .then((result) {
+                              if (result == null ||
+                                  result.formattedAddress == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text("Failed to select location")));
+                              }
+
+                              bookingController.setSenderLocation(result);
+                              senderLoc.text = result!.formattedAddress!;
+
+                              setState(() {});
+                            });
                           },
+
+                          controller: senderLoc,
                           decoration: InputDecoration(
                             prefixIcon: Icon(
                               Icons.location_on_outlined,
                               color: themeColorGreen,
                             ),
                           ),
+
                         ),
                       ),
                     ),
@@ -130,21 +139,25 @@ class _WhereUSendingState extends State<WhereUSending> {
                         width: 326,
                         // height: 45,
                         child: TextFormField(
-                          controller: receiverLoc,
-                          onSaved: (newValue) => receiverLocation = newValue,
-                          onChanged: (value) async {
-                            showPlacePicker();
+                          onTap: () async {
                             LocationResult? result = await Navigator.of(context)
                                 .push(MaterialPageRoute(
                                     builder: (context) => PlacePicker(
                                         "AIzaSyDwC5mBpcztehUHa3Gfjr9m8BtbNAve1LE")));
 
+                            if (result == null ||
+                                result.formattedAddress == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          "Failed to select receiver location")));
+                            }
                             bookingController.setReceiversLocation(result!);
                             receiverLoc.text = result.formattedAddress!;
-                            // bookingController.searchLocation(location: value);
                           },
+
+                          controller: receiverLoc,
                           decoration: InputDecoration(
-                            // border: InputBorder()
                             hintText: 'Location',
                             prefixIcon: Icon(
                               Icons.location_on_outlined,

@@ -146,14 +146,15 @@ class Bookings extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool errorInitializingBooking(){
+  bool errorInitializingBooking() {
     return _errorInitializingBooking;
   }
 
   Future bookingsProduct(
       {File? doc, String? productID, String? instructions}) async {
-        adding_product=true;
+    adding_product = true;
     notifyListeners();
+
     return await _api
         .postHeadersFormData(
             url: 'bookings/api/products/',
@@ -166,10 +167,11 @@ class Bookings extends ChangeNotifier {
             }))
         .then((value) {
       _proctuctsModel = ProctuctsModel.fromJson(value.data);
-      adding_product=false;
+      adding_product = false;
       notifyListeners();
       return true;
     }).catchError((onError) {
+      adding_product = false;
       return false;
     });
   }
