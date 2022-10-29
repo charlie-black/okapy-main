@@ -17,6 +17,7 @@ class SendPackage extends StatefulWidget {
 class _SendPackageState extends State<SendPackage> {
   int? active;
   bool busy = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,7 +168,7 @@ class _SendPackageState extends State<SendPackage> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 InkWell(
@@ -305,6 +306,14 @@ class _SendPackageState extends State<SendPackage> {
                               backgroundColor:
                                   MaterialStateProperty.all(themeColorAmber)),
                           onPressed: () {
+                            if (active == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Select vehicle"),
+                                ),
+                              );
+                              return;
+                            }
                             setState(() {
                               busy = true;
                             });
@@ -312,23 +321,26 @@ class _SendPackageState extends State<SendPackage> {
                                 .patchVehicle(
                                     vehivleId: active!,
                                     authId: authController.userModel!.id!)
-                                .then((value) {
+                                .then((value) async {
                               setState(() {
                                 busy = false;
                               });
-                              bookingsController.getBookingDetails();
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => const SendPackage()),
-                              // );
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ConfirmBooking()),
-                              );
+                              bool result =
+                                  await bookingsController.getBookingDetails();
+                              if (result) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ConfirmBooking()),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                   const  SnackBar(
+                                        content: Text(
+                                            "Error getting booking details")));
+                              }
                             }).catchError((onError) {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(

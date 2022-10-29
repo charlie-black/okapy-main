@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:okapy/screens/authentication/signup.dart';
 import 'package:okapy/screens/createbooking/createbooking.dart';
 import 'package:okapy/screens/createbooking/getaDriver.dart';
@@ -130,20 +128,20 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         title: bookingsController.bookingsDetailsModel?.product
                                     ?.productType ==
                                 1
-                            ? Text('Electronics')
+                            ? const Text('Electronics')
                             : bookingsController.bookingsDetailsModel?.product
                                         ?.productType ==
                                     2
-                                ? Text('Gift')
+                                ? const Text('Gift')
                                 : bookingsController.bookingsDetailsModel
                                             ?.product?.productType ==
                                         3
-                                    ? Text('Document')
+                                    ? const Text('Document')
                                     : bookingsController.bookingsDetailsModel
                                                 ?.product?.productType ==
                                             4
-                                        ? Text('Package')
-                                        : Text(""),
+                                        ? const Text('Package')
+                                        : const Text(""),
                         subtitle: Text(
                           '${bookingsController.bookingsDetailsModel?.product?.instructions}',
                           style: TextStyle(
@@ -280,11 +278,11 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                                     ),
                                                   ],
                                                 )
-                                              : SizedBox()),
+                                              : const SizedBox()),
                         ],
                       ),
                     ),
-                    Row(
+                   Row(
                       children: [
                         Padding(
                           padding: EdgeInsets.all(15.0),

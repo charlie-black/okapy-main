@@ -79,7 +79,7 @@ class _WhereUSendingState extends State<WhereUSending> {
                         // height: s5,
                         child: TextFormField(
                           onTap: () async {
-                           // showPlacePicker();
+                            // showPlacePicker();
                             Navigator.of(context)
                                 .push(MaterialPageRoute(
                                     builder: (context) => PlacePicker(
@@ -99,18 +99,18 @@ class _WhereUSendingState extends State<WhereUSending> {
                               setState(() {});
                             });
                           },
-
                           controller: senderLoc,
                           decoration: InputDecoration(
+                            hintText: "Tap to select sender location",
                             prefixIcon: Icon(
                               Icons.location_on_outlined,
                               color: themeColorGreen,
                             ),
                           ),
-
                         ),
                       ),
                     ),
+
                     Row(
                       children: [
                         Padding(
@@ -155,10 +155,9 @@ class _WhereUSendingState extends State<WhereUSending> {
                             bookingController.setReceiversLocation(result!);
                             receiverLoc.text = result.formattedAddress!;
                           },
-
                           controller: receiverLoc,
                           decoration: InputDecoration(
-                            hintText: 'Location',
+                            hintText: 'Tap to select receiver location',
                             prefixIcon: Icon(
                               Icons.location_on_outlined,
                               color: themeColorGreen,
@@ -219,6 +218,33 @@ class _WhereUSendingState extends State<WhereUSending> {
                               });
                               _formKey.currentState!.save();
 
+                              if (receiverLoc.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content:Text("Set receiver location")));
+                                return;
+                              }
+
+                              if (senderLoc.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Set sender location")));
+                                return;
+                              }                          
+
+                              if(name==null||name==""){
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Set name")));
+                                return;
+                              }
+
+                              if(phone==null||phone==""){
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Set phone")));
+                                return;
+                              }
+
                               bookingController
                                   .setReceiverDetails(
                                       receiverLoc: receiverLoc.text,
@@ -235,6 +261,7 @@ class _WhereUSendingState extends State<WhereUSending> {
                                 setState(() {
                                   busy = false;
                                 });
+                              
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
