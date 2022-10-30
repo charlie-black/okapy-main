@@ -87,7 +87,10 @@ class _HomePageState extends State<HomePage3> {
             minHeight: _panelHeightClosed,
             parallaxEnabled: true,
             parallaxOffset: .5,
-            body: _body(),
+            body: Consumer<Bookings>(
+                builder: (context, bookingsController, child) {
+              return _body(bookingsController);
+            }),
             panelBuilder: (sc) => _panel(sc),
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(18.0),
@@ -325,11 +328,15 @@ class _HomePageState extends State<HomePage3> {
     );
   }
 
-  Widget _body() {
+  Widget _body(Bookings bookings) {
     return GoogleMapsWidget(
       apiKey: "AIzaSyDwC5mBpcztehUHa3Gfjr9m8BtbNAve1LE",
-      sourceLatLng: const LatLng(40.484000837597925, -3.369978368282318),
-      destinationLatLng: const LatLng(40.48017307700204, -3.3618026599287987),
+      sourceLatLng: bookings.bookingActiveModel == null
+          ? LatLng(0, 0)
+          : bookings.bookingActiveModel!.getSenderLocation(),
+      destinationLatLng: bookings.bookingActiveModel == null
+          ? LatLng(0, 0)
+          : bookings.bookingActiveModel!.getReceiverLocation(),
       routeWidth: 5,
       routeColor: themeColorAmber,
       destinationMarkerIconInfo: const MarkerIconInfo(

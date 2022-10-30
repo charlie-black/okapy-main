@@ -168,6 +168,8 @@ class _AddCardState extends State<AddCard> {
                             busy = true;
                           });
 
+                          print("booking id ----------->${bookingsController.bookingActiveModel!.booking!.id!}");
+                          
                           _formKey.currentState!.save();
                           KeyboardUtil.hideKeyboard(context);
                           paymentController

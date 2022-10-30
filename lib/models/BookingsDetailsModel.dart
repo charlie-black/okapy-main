@@ -1,7 +1,25 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class BookingDetailsModel {
   Booking? booking;
   Product? product;
   Receiver? receiver;
+
+  LatLng getSenderLocation() {
+    if (booking == null) {
+      return LatLng(0.0, 0.0);
+    } else {
+      return LatLng(booking!.latitude ?? 0, booking!.longitude ?? 0);
+    }
+  }
+
+  LatLng getReceiverLocation() {
+    if (booking == null) {
+      return LatLng(0.0, 0.0);
+    } else {
+      return LatLng(receiver!.latitude ?? 0, receiver!.longitude ?? 0);
+    }
+  }
 
   BookingDetailsModel({this.booking, this.product, this.receiver});
 
