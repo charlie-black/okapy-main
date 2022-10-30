@@ -40,7 +40,8 @@ class Bookings extends ChangeNotifier {
   BookingsModel? _bookingsModel;
   BookingsModel? get bookingsModel => _bookingsModel;
   BookingDetailsModel? _bookingsDetailsModel;
-  BookingDetailsModel? get bookingsDetailsModel => _bookingActiveModel;//_bookingsDetailsModel;
+  BookingDetailsModel? get bookingsDetailsModel =>
+      _bookingActiveModel; //_bookingsDetailsModel;
   ProctuctsModel? _proctuctsModel;
   ProctuctsModel? get proctuctsModel => _proctuctsModel;
   LocationResult? _senderLocation;
@@ -58,7 +59,8 @@ class Bookings extends ChangeNotifier {
   String _formatedDate = '';
   String get formatedDate => _formatedDate;
   BookingDetailsModel? _bookingsDetailsModelActive;
-  BookingDetailsModel? get bookingsDetailsModelActive => _bookingActiveModel; //_bookingsDetailsModel;
+  BookingDetailsModel? get bookingsDetailsModelActive =>
+      _bookingActiveModel; //_bookingsDetailsModel;
   Bookings() {
     getpartners();
     getallBookings();
@@ -265,6 +267,8 @@ class Bookings extends ChangeNotifier {
     notifyListeners();
   }
 
+ 
+
   getBookingDetailID({required int id}) async {
     return await _api.getData(endpoint: 'bookings/api/confirm/$id');
   }
@@ -273,8 +277,6 @@ class Bookings extends ChangeNotifier {
     _busy = true;
     notifyListeners();
     await _api.getData(endpoint: 'bookings/api/confirm/$id').then((value) {
-
-      print("booking details ----------------------${value}");
       _bookingActiveModel = BookingDetailsModel.fromJson(value.data);
     });
     _busy = false;

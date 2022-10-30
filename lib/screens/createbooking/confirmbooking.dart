@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:okapy/screens/authentication/signup.dart';
 import 'package:okapy/screens/createbooking/createbooking.dart';
 import 'package:okapy/screens/createbooking/getaDriver.dart';
+import 'package:okapy/screens/payment/addCard.dart';
 import 'package:okapy/screens/utils/colors.dart';
 import 'package:okapy/state/bookings.dart';
 import 'package:okapy/utils/constants.dart';
@@ -83,7 +86,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                         height: 60,
                                         width: 60,
                                         decoration: BoxDecoration(
-                                            color: Color(0xffDDF4FF),
+                                            color: const Color(0xffDDF4FF),
                                             borderRadius:
                                                 BorderRadius.circular(5)),
                                         child: Center(
@@ -101,7 +104,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                             height: 60,
                                             width: 60,
                                             decoration: BoxDecoration(
-                                                color: Color(0xffE2FFE3),
+                                                color: const Color(0xffE2FFE3),
                                                 borderRadius:
                                                     BorderRadius.circular(5)),
                                             child: Center(
@@ -282,8 +285,8 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         ],
                       ),
                     ),
-                   Row(
-                      children: [
+                    Row(
+                      children: const [
                         Padding(
                           padding: EdgeInsets.all(15.0),
                           child: Text(
@@ -328,17 +331,20 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                           padding: const EdgeInsets.only(left: 28.0, top: 15),
                           child: Image.asset('assets/locationblack-icon.png'),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, top: 8),
-                          child: Text(
-                            '${bookingsController.bookingActiveModel?.booking?.formatedAddress}',
-                            style:
-                                TextStyle(color: themeColorGrey, fontSize: 14),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0, top: 8),
+                            child: Text(
+                              '${bookingsController.bookingActiveModel?.booking?.formatedAddress}',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: themeColorGrey, fontSize: 14),
+                            ),
                           ),
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Padding(
@@ -360,12 +366,15 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                           padding: const EdgeInsets.only(left: 30.0, top: 15),
                           child: Image.asset('assets/locationblack-icon.png'),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, top: 15),
-                          child: Text(
-                            '${bookingsController.bookingActiveModel?.receiver?.formatedAddress}',
-                            style:
-                                TextStyle(color: themeColorGrey, fontSize: 14),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0, top: 15),
+                            child: Text(
+                              '${bookingsController.bookingActiveModel?.receiver?.formatedAddress}',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: themeColorGrey, fontSize: 14),
+                            ),
                           ),
                         )
                       ],
@@ -430,7 +439,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, top: 8),
                           child: Text(
-                            'Cash',
+                            'Card',
                             style:
                                 TextStyle(color: themeColorGrey, fontSize: 14),
                           ),
@@ -488,12 +497,12 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                               MaterialStateProperty.all(
                                                   Colors.white)),
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SignUp()),
-                                        );
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           const SignUp()),
+                                        // );
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -531,7 +540,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const GetADriver()),
+                                              const AddCard()),
                                     );
                                   },
                                   child: Row(
@@ -560,7 +569,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     )
                   ],

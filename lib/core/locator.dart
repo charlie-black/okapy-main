@@ -3,10 +3,12 @@ import 'package:okapy/core/api.dart';
 import 'package:okapy/state/auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:okapy/state/bookings.dart';
+import 'package:okapy/state/payment.dart';
 
 GetIt locator = GetIt.instance;
 void setupLocator() {
   locator.registerFactory(() => Auth());
+  locator.registerFactory(() => Payment());
   locator.registerFactory(() => Bookings());
   locator.registerFactory(() => Api());
 }

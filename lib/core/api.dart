@@ -26,11 +26,12 @@ class Api {
     required String url,
     required Map<String, dynamic> data,
   }) async {
+    print('url -----------$url');
     final prefs = await SharedPreferences.getInstance();
     User user = User.fromJson(jsonDecode(prefs.getString('creds')!));
     String basicAuth =
         'Basic ${base64.encode(utf8.encode('${user.userName}:${user.password}'))}';
-        
+
     return _dio.post(serverUrl + url,
         data: data,
         options: Options(
@@ -102,6 +103,32 @@ class Api {
             contentType: 'multipart/form-data',
             headers: <String, String>{
               'authorization': basicAuth,
+              'accept': 'application/json'
+            },
+            validateStatus: (status) {
+              return status! < 500;
+            }));
+  }
+
+  Future<Response> postHeadersFormDataToken({
+    required String url,
+    required data,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    User user = User.fromJson(jsonDecode(prefs.getString('creds')!));
+    AuthModel userToken =
+        AuthModel.fromJson(jsonDecode(prefs.getString('token')!));
+
+    String basicAuth =
+        'Basic ${base64.encode(utf8.encode('${user.userName}:${user.password}'))}';
+
+    return _dio.post(serverUrl + url,
+        data: data,
+        options: Options(
+            responseType: ResponseType.json,
+            contentType: 'multipart/form-data',
+            headers: <String, String>{
+              'Authorization': "Token ${userToken.key}",
               'accept': 'application/json'
             },
             validateStatus: (status) {

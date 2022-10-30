@@ -1,13 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_maps_widget/google_maps_widget.dart';
-import 'package:okapy/page/dummy.dart';
-import 'package:okapy/screens/home/slider.dart';
-import 'package:okapy/screens/home/tabs.dart';
+import 'package:okapy/screens/home/components/drawer.dart';
 import 'package:okapy/screens/utils/colors.dart';
+import 'package:okapy/state/auth.dart';
+import 'package:okapy/state/bookings.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class GetADriver extends StatefulWidget {
@@ -21,243 +20,37 @@ class _GetADriverState extends State<GetADriver> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _key,
-      drawer: Drawer(
-          child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 30.0, bottom: 20),
-            child: Image.asset('assets/logo-01.png'),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Image.asset(
-                  'assets/av1.png',
-                  height: 100,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Muhu Njenga',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Edit Profile'),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          const Divider(
-            height: 2,
-          ),
-          // Spacer(),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * .18),
-                  child: Image.asset(
-                    'assets/timer.png',
-                    height: 20,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    'My Bookings',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                )
-              ],
-            ),
-          ),
-
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * .18),
-                  child: Image.asset(
-                    'assets/cart.png',
-                    height: 20,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    'Partners',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * .18),
-                  child: Image.asset(
-                    'assets/calender.png',
-                    height: 20,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    'Schedule Booking',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * .18),
-                  child: Image.asset(
-                    'assets/payment.png',
-                    height: 20,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    'Payment',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * .18),
-                  child: Image.asset(
-                    'assets/notification.png',
-                    height: 20,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    'Notifications',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
+    return Consumer<Bookings>(
+      builder: (context, bookingsController, child) => Consumer<Auth>(
+        builder: (context, authController, child) => Scaffold(
+          key: _key,
+          drawer: drawer(authController, context, bookingsController),
+          body: Stack(
+            children: [
+              HomePage3(),
+              // maps(context),
+              Positioned(
+                top: 30,
+                left: 15,
+                child: InkWell(
+                  onTap: () {
+                    _key.currentState!.openDrawer();
+                  },
                   child: Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                        color: themeColorAmber,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Center(
-                      child: Text(
-                        '5',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ),
-                  ),
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(
+                        Icons.menu,
+                        size: 30,
+                      )),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const Spacer(),
-          const Divider(
-            height: 2,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            'Version 1.1',
-            style: TextStyle(fontSize: 12, color: themeColorGrey),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "Logout",
-                  style: TextStyle(color: Color(0xffBB1600), fontSize: 16),
-                )),
-          )
-        ],
-      ) // Populate the Drawer in the next step.
-          ),
-      body: Stack(
-        children: [
-          HomePage3(),
-          // maps(context),
-          Positioned(
-            top: 30,
-            left: 15,
-            child: InkWell(
-              onTap: () {
-                _key.currentState!.openDrawer();
-              },
-              child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: const Icon(
-                    Icons.menu,
-                    size: 30,
-                  )),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -337,78 +130,172 @@ class _HomePageState extends State<HomePage3> {
   }
 
   Widget _panel(ScrollController sc) {
-    return MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: ListView(
-          controller: sc,
-          children: <Widget>[
-            const SizedBox(
-              height: 12.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: 30,
-                  height: 5,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(12.0))),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 18.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 25.0),
-                  child: Center(
-                    child: Text(
-                      "Great ! Now let us get you a driver",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+    return Consumer<Bookings>(
+      builder: (context, bookingsController, child) => MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView(
+            controller: sc,
+            children: <Widget>[
+              const SizedBox(
+                height: 12.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 30,
+                    height: 5,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12.0))),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 18.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.0),
+                    child: Center(
+                      child: Text(
+                        "Great ! Now let us get you a driver",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            const LinearProgressIndicator(
-              value: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Image.asset(
-                  'assets/1.png',
-                  height: 75,
-                  // width: 75,
-                ),
-                title: Text('Groceries'),
-                subtitle: Text(
-                  'Brooke Manor, Lower Kabete ',
-                  style: TextStyle(fontSize: 13),
-                ),
-                trailing: Text(
-                  'Ksh.450',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                ],
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              const LinearProgressIndicator(
+                value: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  leading: bookingsController
+                              .bookingActiveModel?.product?.productType ==
+                          1
+                      ? Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                              color: const Color.fromARGB(71, 7, 36, 154),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: const Icon(
+                            Icons.headphones,
+                            size: 30,
+                            color: Color(0xff07259A),
+                          ),
+                        )
+                      : bookingsController
+                                  .bookingActiveModel?.product?.productType ==
+                              2
+                          ? Container(
+                              // E1CAFF
+                              height: 47,
+                              width: 47,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffE1CAFF),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/giftBox.png',
+                                  height: 27,
+                                ),
+                              ),
+                            )
+                          : bookingsController.bookingActiveModel?.product
+                                      ?.productType ==
+                                  3
+                              ? Container(
+                                  // E1CAFF
+                                  height: 60,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xffDDF4FF),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/doc.png',
+                                      height: 27,
+                                    ),
+                                  ),
+                                )
+                              : bookingsController.bookingActiveModel?.product
+                                          ?.productType ==
+                                      4
+                                  ? Container(
+                                      // E1CAFF
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xffE2FFE3),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Center(
+                                        child: Image.asset(
+                                          'assets/package.png',
+                                          height: 27,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      // E1CAFF
+                                      height: 47,
+                                      width: 47,
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xffFFECB3),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: const Center(
+                                          child: Icon(
+                                        Icons.add,
+                                        size: 30,
+                                      )),
+                                    ),
+                  title: bookingsController
+                              .bookingActiveModel?.product?.productType ==
+                          1
+                      ? const Text('Electronics')
+                      : bookingsController
+                                  .bookingActiveModel?.product?.productType ==
+                              2
+                          ? const Text('Gift')
+                          : bookingsController.bookingActiveModel?.product
+                                      ?.productType ==
+                                  3
+                              ? const Text('Document')
+                              : bookingsController.bookingActiveModel?.product
+                                          ?.productType ==
+                                      4
+                                  ? const Text('Package')
+                                  : const Text(""),
+                  subtitle: Text(
+                    '${bookingsController.bookingActiveModel?.booking?.formatedAddress}',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  trailing: Text(
+                    'Ksh.450',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 30,
-            )
-          ],
-        ));
+              SizedBox(
+                height: 30,
+              )
+            ],
+          )),
+    );
   }
 
   Widget _button(String label, IconData icon, Color color) {

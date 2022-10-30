@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:okapy/screens/createbooking/getaDriver.dart';
 import 'package:okapy/screens/utils/colors.dart';
+import 'package:okapy/state/bookings.dart';
+import 'package:okapy/state/payment.dart';
+import 'package:okapy/utils/KeyboardUtil.dart';
+import 'package:flutter_credit_card/credit_card_brand.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:provider/provider.dart';
 
 class AddCard extends StatefulWidget {
   const AddCard({Key? key}) : super(key: key);
@@ -11,6 +16,32 @@ class AddCard extends StatefulWidget {
 }
 
 class _AddCardState extends State<AddCard> {
+  final _formKey = GlobalKey<FormState>();
+  bool busy = false;
+
+  String cardNumber = '';
+  String expiryDate = '';
+  String cvvCode = '';
+  bool isCvvFocused = false;
+  bool useGlassMorphism = false;
+  bool useBackgroundImage = false;
+  OutlineInputBorder border = OutlineInputBorder(
+    borderSide: BorderSide(
+      color: themeColorAmber,
+      width: 2.0,
+    ),
+  );
+
+  void onCreditCardModelChange(CreditCardModel? creditCardModel) {
+    setState(() {
+      cardNumber = creditCardModel!.cardNumber;
+      expiryDate = creditCardModel.expiryDate;
+      // cardHolderName = creditCardModel.cardHolderName;
+      cvvCode = creditCardModel.cvvCode;
+      isCvvFocused = creditCardModel.isCvvFocused;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,90 +52,213 @@ class _AddCardState extends State<AddCard> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 1),
-            child: SizedBox(
-              width: 326,
-              child: Text(
-                "Card Number",
-                style: TextStyle(color: themeColorGrey, fontSize: 12),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              width: 326,
-              height: 45,
-              child: TextFormField(
-                decoration: InputDecoration(
-                    // border: InputBorder()
-                    prefixIcon: Icon(
-                  Icons.credit_card_rounded,
-                  color: themeColorGreen,
-                )),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .45,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10),
-                  child: SizedBox(
-                    width: 326,
-                    height: 45,
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        // border: InputBorder()
-                        hintText: 'Expiry date',
+      body: Consumer<Payment>(
+        builder: (context, paymentController, child) => Consumer<Bookings>(
+          builder: (context, bookingsController, child) => SafeArea(
+            child: Column(
+              children: [
+                CreditCardWidget(
+                  glassmorphismConfig:
+                      useGlassMorphism ? Glassmorphism.defaultConfig() : null,
+                  cardNumber: cardNumber,
+                  expiryDate: expiryDate,
+                  cardHolderName: '',
+                  cvvCode: cvvCode,
+                  bankName: '',
+                  showBackView: isCvvFocused,
+                  obscureCardNumber: true,
+                  obscureCardCvv: true,
+                  isHolderNameVisible: true,
+                  cardBgColor: themeColorAmber,
+                  backgroundImage:
+                      useBackgroundImage ? 'assets/card_bg.png' : null,
+                  isSwipeGestureEnabled: true,
+                  onCreditCardWidgetChange:
+                      (CreditCardBrand creditCardBrand) {},
+                  customCardTypeIcons: <CustomCardTypeIcon>[
+                    CustomCardTypeIcon(
+                      cardType: CardType.mastercard,
+                      cardImage: Image.asset(
+                        'assets/mastercard.png',
+                        height: 48,
+                        width: 48,
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        CreditCardForm(
+                          formKey: _formKey,
+                          obscureCvv: true,
+                          obscureNumber: false,
+                          cardNumber: cardNumber,
+                          cvvCode: cvvCode,
+                          isHolderNameVisible: false,
+                          isCardNumberVisible: true,
+                          isExpiryDateVisible: true,
+                          cardHolderName: '',
+                          expiryDate: expiryDate,
+                          themeColor: themeColorAmber,
+                          textColor: Colors.black,
+                          cardNumberDecoration: InputDecoration(
+                            labelText: 'Number',
+                            hintText: 'XXXX XXXX XXXX XXXX',
+                            hintStyle: const TextStyle(color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                          ),
+                          expiryDateDecoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            labelText: 'Expired Date',
+                            hintText: 'XX/XX',
+                          ),
+                          cvvCodeDecoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            labelText: 'CVV',
+                            hintText: 'XXX',
+                          ),
+                          cardHolderDecoration: InputDecoration(
+                            hintStyle: const TextStyle(color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            labelText: 'Card Holder',
+                          ),
+                          onCreditCardModelChange: onCreditCardModelChange,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      height: 49,
+                      width: 326,
+                      child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(themeColorAmber)),
+                        onPressed: () {
+                          if (!_formKey.currentState!.validate()) {
+                            return;
+                          }
+
+                          if (bookingsController.bookingActiveModel == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("No current booking")));
+                            return;
+                          }
+
+                          setState(() {
+                            busy = true;
+                          });
+
+                          _formKey.currentState!.save();
+                          KeyboardUtil.hideKeyboard(context);
+                          paymentController
+                              .initiatePayment(
+                                  cardNo: cardNumber.replaceAll(' ', ''),
+                                  user:
+                                      "${bookingsController.bookingActiveModel!.booking!.owner!.id!}",
+                                  expirationDate: expiryDate,
+                                  amount: "0.029",
+                                  orderId:
+                                      "${bookingsController.bookingActiveModel!.booking!.id!}",
+                                  cardCode: cvvCode)
+                              .then((value) {
+                            paymentController
+                                .convertToOrder(
+                                    bookingId: bookingsController
+                                        .bookingActiveModel!.booking!.id!,
+                                    owner: bookingsController
+                                        .bookingActiveModel!
+                                        .booking!
+                                        .owner!
+                                        .id!)
+                                .then((value) {
+                              print('value----------------------->${value}');
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("Payment was successfull"),
+                              ));
+                              setState(() {
+                                busy = false;
+                              });
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const GetADriver()),
+                              );
+                            }).catchError((onError) {
+                              setState(() {
+                                busy = false;
+                              });
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("Payment was successfull"),
+                              ));
+                              setState(() {
+                                busy = false;
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const GetADriver()),
+                              );
+                            });
+                          }).catchError((onError) {
+                            setState(() {
+                              busy = false;
+                            });
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => const GetADriver()),
+                            // );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text(
+                                  "Payment was unsuccessfull. An Error occured"),
+                            ));
+                          });
+                        },
+                        child: busy
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Add card',
+                                style: TextStyle(
+                                    color: themeColorGreen,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .45,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10),
-                  child: SizedBox(
-                    width: 326,
-                    height: 45,
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        // border: InputBorder()
-                        hintText: 'Secure code',
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ]),
-          ),
-          Expanded(
-            child: Center(
-              child: SizedBox(
-                  height: 49,
-                  width: 326,
-                  child: TextButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(themeColorAmber)),
-                      onPressed: () {},
-                      child: Text(
-                        'Add card',
-                        style: TextStyle(
-                            color: themeColorGreen,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
-                      ))),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

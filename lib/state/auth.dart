@@ -85,6 +85,7 @@ class Auth extends ChangeNotifier {
     ).then((value) {
       if (value.statusCode == 200) {
         _authModel = AuthModel.fromJson(value.data);
+        prefs.setString('token', jsonEncode({'key':_authModel!.key}));
         // _rooms = Room.fromJson(value.data);
 
         prefs.setString(
