@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:okapy/screens/createbooking/whereuSending.dart';
+import 'package:okapy/screens/home/home.dart';
 import 'package:okapy/screens/utils/colors.dart';
 import 'package:okapy/state/auth.dart';
 import 'package:okapy/state/bookings.dart';
@@ -26,22 +27,21 @@ class _CreatebookingState extends State<Createbooking> {
 
   TextEditingController productNameController = TextEditingController();
 
-  
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  // Start listening to changes.
-  productNameController.addListener((){
-    productName=productNameController.text;
-  });
-}
+    // Start listening to changes.
+    productNameController.addListener(() {
+      productName = productNameController.text;
+    });
+  }
 
-@override
-void dispose() {
-  productNameController.dispose();
-  super.dispose();
-}
+  @override
+  void dispose() {
+    productNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -326,50 +326,69 @@ void dispose() {
                           const SizedBox(
                             height: 20,
                           ),
-
                           if (_doc != null) ...[
-                            SizedBox(
-                                height: 150,
-                                child: Image.file(
-                                  _doc!,
-                                  fit: BoxFit.cover,
-                                )),
+                            Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+
+                                Center(
+                                  child: SizedBox(
+                                    height: 250,
+                                    child: Image.file(
+                                      _doc!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                    onTap: (){
+                                      setState(() {
+                                        _doc = null;
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.cancel,
+                                      color: Colors.red,
+                                      size: 30,
+                                    ))
+                              ],
+                            ),
                             const SizedBox(
                               height: 5,
                             ),
-                            SizedBox(
-                              height: 49,
-                              width: 326,
-                              child: TextButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
-                                onPressed: () {
-                                  setState(() {
-                                    _doc = null;
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 50,
-                                    ),
-                                    const SizedBox(
-                                      width: 200,
-                                      child: Center(
-                                        child: Text(
-                                          'Delete',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            // SizedBox(
+                            //   height: 49,
+                            //   width: 326,
+                            //   child: TextButton(
+                            //     style: ButtonStyle(
+                            //         backgroundColor:
+                            //             MaterialStateProperty.all(Colors.red)),
+                            //     onPressed: () {
+                            //       setState(() {
+                            //         _doc = null;
+                            //       });
+                            //     },
+                            //     child: Row(
+                            //       children: const [
+                            //         SizedBox(
+                            //           width: 50,
+                            //         ),
+                            //         // SizedBox(
+                            //         //   width: 200,
+                            //         //   child: Center(
+                            //         //     child: Text(
+                            //         //       'Delete',
+                            //         //       style: TextStyle(
+                            //         //           color: Colors.white,
+                            //         //           fontSize: 14,
+                            //         //           fontWeight: FontWeight.w600),
+                            //         //     ),
+                            //         //   ),
+                            //         // ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                           ] else ...[
                             Row(
                               children: [
@@ -456,7 +475,6 @@ void dispose() {
                           const SizedBox(
                             height: 30,
                           ),
-                          
                           SizedBox(
                             height: 49,
                             width: 326,
@@ -472,7 +490,7 @@ void dispose() {
                                               Text("Select product image")));
                                   return;
                                 }
-                                if (productName == null || productName=="") {
+                                if (productName == null || productName == "") {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
