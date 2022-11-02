@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_widget/google_maps_widget.dart';
 import 'package:okapy/screens/createbooking/createbooking.dart';
+import 'package:okapy/screens/home/components/recent_bookings.dart';
 import 'package:okapy/screens/home/tabs.dart';
 import 'package:okapy/screens/utils/colors.dart';
 import 'package:okapy/state/auth.dart';
@@ -28,9 +31,16 @@ class _HomePageState extends State<HomePage2> {
   double _panelHeightOpen = 0;
   double _panelHeightClosed = 95.0;
   bool hasJob = false;
+   double? long ;
+   double? lat ;
+
+
+
   @override
   void initState() {
+    getLocation();
     super.initState();
+
     // print(widget.id);
     // print(widget.id);
     // print('widget.id');
@@ -39,9 +49,38 @@ class _HomePageState extends State<HomePage2> {
     _fabHeight = _initFabHeight;
   }
 
+
+
+
+
+   getLocation() async {
+    LocationPermission per = await Geolocator.checkPermission();
+    if (per == LocationPermission.denied ||
+        per == LocationPermission.deniedForever) {
+      print("permission denied");
+      LocationPermission per1 = await Geolocator.requestPermission();
+
+    } else {
+      Position currentLoc = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+      setState(() {
+        long = currentLoc.longitude;
+        lat = currentLoc.latitude;
+
+
+      });
+
+    }
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     _panelHeightOpen = MediaQuery.of(context).size.height * .40;
+
+
 
     return Scaffold(
       body: Consumer<Bookings>(
@@ -127,12 +166,12 @@ class _HomePageState extends State<HomePage2> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
+              children: const <Widget>[
                 Padding(
                   padding: EdgeInsets.only(left: 25.0),
                   child: Text(
                     "Bookings",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 26.0,
                     ),
@@ -181,7 +220,7 @@ class _HomePageState extends State<HomePage2> {
                       ),
                     ],
                   )
-                : const SizedBox(),
+                : SizedBox(),
             Column(
               children: [
                 Padding(
@@ -212,27 +251,10 @@ class _HomePageState extends State<HomePage2> {
                               );
                             }
                           },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Text(
-                                'Create bookings',
-                                style: TextStyle(
-                                    color: Color(0xff1A411D), fontSize: 14),
-                              ),
-                              SizedBox(
-                                width:
-                                    (MediaQuery.of(context).size.width / 1.2) /
-                                        3,
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_right,
-                                    size: 25,
-                                    color: Color(0xff1A411D),
-                                  ),
-                                ),
-                              )
-                            ],
+                          child: const Text(
+                            'Create bookings',
+                            style: TextStyle(
+                                color: Color(0xff1A411D), fontSize: 14),
                           )),
                     ),
                   ),
@@ -277,17 +299,19 @@ class _HomePageState extends State<HomePage2> {
 
   Widget _body() {
     return GoogleMapsWidget(
+      defaultCameraLocation:LatLng(lat??0,long??0) ,
+      defaultCameraZoom: 0.0,
       apiKey: "AIzaSyDwC5mBpcztehUHa3Gfjr9m8BtbNAve1LE",
-      sourceLatLng: const LatLng(40.484000837597925, -3.369978368282318),
-      destinationLatLng: const LatLng(40.48017307700204, -3.3618026599287987),
+      sourceLatLng:  LatLng(lat!,long!),
+      destinationLatLng:  LatLng(lat!,long!),
       routeWidth: 5,
       routeColor: Colors.transparent,
-      destinationMarkerIconInfo: const MarkerIconInfo(
-          assetPath: 'assets/flag.png', assetMarkerSize: Size.square(100)),
-      sourceMarkerIconInfo: const MarkerIconInfo(
-          assetPath: "assets/start.png", assetMarkerSize: Size.square(100)
-          // assetMarkerSize: Size.square(12)
-          ),
+      // destinationMarkerIconInfo: const MarkerIconInfo(
+      //     assetPath: 'assets/flag.png', assetMarkerSize: Size.square(100)),
+      // sourceMarkerIconInfo: const MarkerIconInfo(
+      //     assetPath: "assets/start.png", assetMarkerSize: Size.square(100)
+      //     // assetMarkerSize: Size.square(12)
+      //     ),
       updatePolylinesOnDriverLocUpdate: true,
       sourceName: "This is source name",
       driverName: "Alex",
