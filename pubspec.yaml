@@ -36,7 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_maps_flutter: ^2.1.12
   google_maps_widget: ^1.0.4
-  flutter_svg: 
+  flutter_svg:
+  location:
   sliding_up_panel: ^2.0.0+1
   flutter_map: ^2.2.0
   cached_network_image:

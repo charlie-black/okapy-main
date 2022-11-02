@@ -58,43 +58,7 @@ class _HomeState extends State<Home> {
                       )),
                 ),
               ),
-              Positioned(
-                  right: 1,
-                  top: MediaQuery.of(context).size.height / 2,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FloatingActionButton(
-                      heroTag: 'nextp123',
-                      elevation: 1,
-                      backgroundColor: Colors.white,
-                      onPressed: () {
-                        bookingsController.bookingNext();
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => Home()),
-                        // );
-                      },
-                      child: const Icon(Icons.arrow_forward_ios),
-                    ),
-                  )),
-              bookingsController.bookingPrev != null
-                  ? Positioned(
-                      left: 1,
-                      top: MediaQuery.of(context).size.height / 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: FloatingActionButton(
-                          heroTag: 'nextp123',
-                          elevation: 1,
-                          backgroundColor: Colors.white,
-                          onPressed: () {
-                            bookingsController.bookingprevF();
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(Icons.arrow_back_ios),
-                        ),
-                      ))
-                  : SizedBox(),
+
             ],
           ),
         ),

@@ -167,7 +167,7 @@ class _BookingMyBookingState extends State<BookingMyBooking> {
                         ),
 
       title: _bookingDetailsModel?.product?.productType == 1
-          ? const Text('Electronics')
+          ? const Text('Electronics',)
           : _bookingDetailsModel?.product?.productType == 2
               ? const Text('Gift')
               : _bookingDetailsModel?.product?.productType == 3
@@ -176,8 +176,8 @@ class _BookingMyBookingState extends State<BookingMyBooking> {
                       ? const Text('Package')
                       : const Text(""),
       // subtitle: Text('2 Aug 2022'),
-      trailing: Text(
-        'Ksh.350',
+      subtitle: Text(
+        widget.booking.bookingId!,
         style: TextStyle(
             color: themeColorGreen, fontSize: 14, fontWeight: FontWeight.w600),
       ),
